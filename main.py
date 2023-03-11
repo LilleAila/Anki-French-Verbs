@@ -107,8 +107,8 @@ regularVerbs = [
     
 regularVerbs = Path("regelrett.txt").read_text().split("\n")
 regularVerbs = list(map(lambda a: {
-    "value": a.split(" å ")[0],
-    "translated": "å " + " å ".join(a.split(" å ")[1:])
+    "value": a.lower().split(" å ")[0],
+    "translated": "å " + " å ".join(a.lower().split(" å ")[1:])
 }, regularVerbs))
 
 # print(len(regularVerbs))
