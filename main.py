@@ -229,7 +229,7 @@ step = 8
 for i in range(0, len(uregelrett), step):
     uregelrette.append(uregelrett[i:i+step])
 
-time = ["présent", "passé composé", "futur proche"]
+times = ["présent", "passé composé", "futur proche"]
 
 for verb in uregelrette:
     infinitive = verb[0][1].lower().replace("*", "")
@@ -237,19 +237,30 @@ for verb in uregelrette:
 
     cards["u"].append(infinitive.capitalize() + " - {{c1::" + translated + "}}")
 
-    for i in range(2, 8):
-        current = verb[i]
-        subject = current[0]
-        for j in range(1, 4):
-            currentForm = current[j]
-            if i == 2:
-                subject = "j'" if currentForm[:1] in vowels else "je"
-            havespace = " " if subject != "j'" else ""
-            # print(subject + havespace + currentForm)
-            cards["u"].append(infinitive.capitalize() +
-                         " (" + time[j-1] + ") - " +
-                         subject + havespace +
-                         "{{c1::" + currentForm + "}}")
+    verbForms = verb[2:]
+
+    # print(verbForms)
+
+    for currentForm in verbForms:
+        forms = currentForm[-3:]
+        currentSubjects = currentForm[:-3]
+        currentSubjects = list(map(lambda a: a.replace('"', "").split("/")[0].strip(), currentSubjects))
+        # print(currentSubjects, forms)
+        for time in range(1, 3+1):
+            # print(form)
+            for subj in currentSubjects:
+                # for time in range(1, 3):
+                havespace = " "
+                if subj == "je" and forms[time-1][:1] in vowels:
+                    subj = "j'"
+                    havespace = ""
+                # print(form, time, subj)
+                cards["u"].append(infinitive.capitalize() +
+                                    " (" + times[time-1] + ") - " +
+                                    subj + havespace +
+                                    "{{c1::" + forms[time-1] + "}}")
+
+[print(i) for i in cards["u"]]
 
 # print(cards, len(cards))
 # print(len(cards))
