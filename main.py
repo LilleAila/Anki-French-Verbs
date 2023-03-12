@@ -94,27 +94,13 @@ seIndexes = {
     "elles": 1
 }
 
-# regularVerbs = [
-#   "parler", "aimer", "dormir", "choisir", "attendre"
-# ]
-
-regularVerbs = [
-    # {
-    #     "value": "parler",
-    #     "translated": "å snakke"
-    # }
-]
+regularVerbs = []
     
 regularVerbs = Path("regelrett.txt").read_text().split("\n")
 regularVerbs = list(map(lambda a: {
     "value": a.lower().split(" å ")[0],
     "translated": "å " + " å ".join(a.lower().split(" å ")[1:])
 }, regularVerbs))
-
-# print(len(regularVerbs))
-# print(regularVerbs[0], regularVerbs[1])
-
-# cards = []
 
 cards = {
     "e": [],
@@ -138,7 +124,6 @@ for i in regularVerbs:
     cards[verbtype].append(verb.capitalize() + " - {{c1::" + translated + "}}")
     match verbtype:
         case "e":  # ER-verb
-            # print("ER")
             present = [
                 verb[:-1],
                 verb[:-1] + "s",
@@ -149,7 +134,6 @@ for i in regularVerbs:
             ]
             past = verb[:-2] + "é"
         case "i":  # IR-verb
-            # print("IR")
             present = [
                 verb[:-3] + "s",
                 verb[:-3] + "s",
@@ -160,7 +144,6 @@ for i in regularVerbs:
             ]
             past = verb[:-1]
         case "r":  # RE-verb
-            # print("RE")
             present = [
                 verb[:-2] + "s",
                 verb[:-2] + "s",
@@ -171,7 +154,6 @@ for i in regularVerbs:
             ]
             past = verb[:-2] + "u"
         case "s":  # Refleksivt verb
-            # print("Refleksivt")
             verb = verb[3:]
             future = verb
             present = [
@@ -204,7 +186,6 @@ for i in regularVerbs:
                          ((subj + " ") if subj != "j'" else "je ") +
                          "{{c1::" + aller[subj] + " " + future + "}}")
     else:
-        # lage det samme som over men at det virker med refleksive verb
         for subj in currentSubjects:
             cards[verbtype].append("Se " + verb +
                          " (présent) - " +
@@ -218,7 +199,6 @@ for i in regularVerbs:
                          " (futur proche) " +
                          (subj if subj != "j'" else "je") +
                          " {{c1::" + aller[subj] + " " + se[subj] + " " + future + "}}")
-    # Legge til en kode som leser uregelrette verb fra csv
 
 uregelrett = Path("uregelrett.csv").read_text().split("\n")
 uregelrett = list(map(lambda a: a.split(","), uregelrett))
@@ -234,40 +214,27 @@ times = ["présent", "passé composé", "futur proche"]
 for verb in uregelrette:
     infinitive = verb[0][1].lower().replace("*", "")
     translated = verb[0][2].lower()
-
     cards["u"].append(infinitive.capitalize() + " - {{c1::" + translated + "}}")
-
     verbForms = verb[2:]
-
-    # print(verbForms)
 
     for currentForm in verbForms:
         forms = currentForm[-3:]
         currentSubjects = currentForm[:-3]
         currentSubjects = list(map(lambda a: a.replace('"', "").split("/")[0].strip(), currentSubjects))
-        # print(currentSubjects, forms)
         for time in range(1, 3+1):
-            # print(form)
             for subj in currentSubjects:
-                # for time in range(1, 3):
                 havespace = " "
                 if subj == "je" and forms[time-1][:1] in vowels:
                     subj = "j'"
                     havespace = ""
-                # print(form, time, subj)
                 cards["u"].append(infinitive.capitalize() +
                                     " (" + times[time-1] + ") - " +
                                     subj + havespace +
                                     "{{c1::" + forms[time-1] + "}}")
 
-[print(i) for i in cards["u"]]
-
-# print(cards, len(cards))
-# print(len(cards))
-
 decks = {
     "e": genanki.Deck(
-        1677740668561,  # INsert id here
+        1677740668561,
         "Franske Verb::ER-Verb"
     ),
     "i": genanki.Deck(
@@ -288,17 +255,9 @@ decks = {
     )
 }
 
-# for card in cards:
-#     note = genanki.Note(model=genanki.CLOZE_MODEL, fields=[card, ""])
-#     deck.add_note(note)
-
 for key in cards.keys():
-    # print(key)
     for card in cards[key]:
-        # print(card, decks[key])
         note = genanki.Note(model=genanki.CLOZE_MODEL, fields=[card, ""])
         decks[key].add_note(note)
-
-# [print(i) for i in cards.values()]
 
 genanki.Package([*decks.values()]).write_to_file('decks.apkg')
