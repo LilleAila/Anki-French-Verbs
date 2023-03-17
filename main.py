@@ -42,6 +42,19 @@ aller = {
     "elles": "vont"
 }
 
+allerS = {
+    "je": "vais m'",
+    "j'": "vais m'",
+    "tu": "vas t'",
+    "il": "va s'",
+    "elle": "va s'",
+    "on": "va s'",
+    "nous": "allons nous ",
+    "vous": "allez vous ",
+    "ils": "vont s'",
+    "elles": "vont s'"
+}
+
 etre = {
     "je": "suis",
     "j'": "suis",
@@ -68,7 +81,33 @@ se = {
     "elles": "se"
 }
 
+s = {
+    "je": "m'",
+    "j'": "m'",
+    "tu": "t'",
+    "il": "s'",
+    "elle": "s'",
+    "on": "s'",
+    "nous": "nous ",
+    "vous": "vous ",
+    "ils": "s'",
+    "elles": "s'"
+}
+
 seEtre = {
+    "je": "me suis",
+    "j'": "me suis",
+    "tu": "t'es",
+    "il": "s'est",
+    "elle": "s'est",
+    "on": "s'est",
+    "nous": "nous sommes",
+    "vous": "vous êtes",
+    "ils": "se sont",
+    "elles": "se sont"
+}
+
+sEtre = {
     "je": "me suis",
     "j'": "me suis",
     "tu": "t'es",
@@ -106,12 +145,13 @@ cards = {
     "e": [],
     "i": [],
     "r": [],
+    "se": [],
     "s": [],
     "u": []
 }
 
 for i in regularVerbs:
-    verb = i["value"]
+    verb = i["value"].lower()
     translated = i["translated"]
     jeorj = "j'" if verb[0] in vowels else "je"
     present = []
@@ -119,7 +159,8 @@ for i in regularVerbs:
     future = verb
     currentSubjects = [jeorj] + otherSubjects
 
-    verbtype = verb[len(verb) - 2] if verb[:3] != "se " else "s"
+    # verbtype = verb[len(verb) - 2] if verb[:3] != "se " and verb[:2] != "s'" else "se"
+    verbtype = "se" if verb[:3] == "se " else "s" if verb[:2] == "s'" else verb[len(verb) - 2]
 
     cards[verbtype].append(verb.capitalize() + " - {{c1::" + translated + "}}")
     match verbtype:
@@ -153,12 +194,13 @@ for i in regularVerbs:
                 verb[:-2] + "ent"
             ]
             past = verb[:-2] + "u"
-        case "s":  # Refleksivt verb
-            verb = verb[3:]
+        case "se" | "s":  # Refleksivt verb
+            seors = verb[:2] == "s'" # True if verb starts with s'
+            verb = verb[2:] if seors else verb[3:]
             future = verb
             present = [
                 verb[:-1],
-                verb[:-1],
+                verb[:-1] + "s",
                 verb[:-1],
                 verb[:-2] + "ons",
                 verb[:-2] + "ez",
@@ -168,8 +210,22 @@ for i in regularVerbs:
                 verb[:-2] + "é(e)",
                 verb[:-2] + "é(e)s"
             ]
+        # case "s":
+        #     future = verb
+        #     present = [
+        #         verb[:-1],
+        #         verb[:-1] + "s",
+        #         verb[:-1],
+        #         verb[:-2] + "ons",
+        #         verb[:-2] + "ez",
+        #         verb[:-2] + "ent"
+        #     ]
+        #     past = [
+        #         verb[:-2] + "é(e)",
+        #         verb[:-2] + "é(e)s"
+        #     ]
 
-    if verbtype != "s":
+    if verbtype in ["e", "i", "r"]:
         for subj in currentSubjects:
             cards[verbtype].append(verb.capitalize() +
                          " (présent) - " +
@@ -185,7 +241,7 @@ for i in regularVerbs:
                          " (futur proche) - " +
                          ((subj + " ") if subj != "j'" else "je ") +
                          "{{c1::" + aller[subj] + " " + future + "}}")
-    else:
+    elif verbtype == "se":
         for subj in currentSubjects:
             cards[verbtype].append("Se " + verb +
                          " (présent) - " +
@@ -199,6 +255,20 @@ for i in regularVerbs:
                          " (futur proche) " +
                          (subj if subj != "j'" else "je") +
                          " {{c1::" + aller[subj] + " " + se[subj] + " " + future + "}}")
+    else:
+        for subj in currentSubjects:
+            cards[verbtype].append("S'" + verb +
+                         " (présent) - " +
+                         (subj if subj != "j'" else "je") +
+                         " {{c1::" + s[subj] + present[subjects[subj]] + "}}")
+            cards[verbtype].append("S'" + verb +
+                         " (passé composé) - " +
+                         (subj if subj != "j'" else "je") +
+                         " {{c1::" + seEtre[subj] + " " + past[seIndexes[subj]] + "}}")
+            cards[verbtype].append("S'" + verb +
+                         " (futur proche) - " +
+                         (subj if subj != "j'" else "je") +
+                         " {{c1::" + allerS[subj] + future + "}}")
 
 uregelrett = Path("uregelrett.csv").read_text().split("\n")
 uregelrett = list(map(lambda a: a.split(","), uregelrett))
@@ -245,12 +315,16 @@ decks = {
         1677740668563,
         "Franske Verb::RE-Verb"
     ),
-    "s": genanki.Deck(
+    "se": genanki.Deck(
         1677740668564,
-        "Franske Verb::Refleksive Verb"
+        "Franske Verb::Refleksive Verb::Se"
+    ),
+    "s": genanki.Deck(
+        1677740668565,
+        "Franske Verb::Refleksive Verb::S'"
     ),
     "u": genanki.Deck(
-        1677740668565,
+        1677740668566,
         "Franske Verb::Uregelrette Verb"
     )
 }
@@ -261,3 +335,4 @@ for key in cards.keys():
         decks[key].add_note(note)
 
 genanki.Package([*decks.values()]).write_to_file('decks.apkg')
+print("Deck created!")
