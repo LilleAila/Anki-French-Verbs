@@ -197,7 +197,6 @@ for i in regularVerbs:
         case "se" | "s":  # Refleksivt verb
             seors = verb[:2] == "s'" # True if verb starts with s'
             verb = verb[2:] if seors else verb[3:]
-            future = verb
             present = [
                 verb[:-1],
                 verb[:-1] + "s",
@@ -305,27 +304,27 @@ for verb in uregelrette:
 decks = {
     "e": genanki.Deck(
         1677740668561,
-        "Franske Verb::ER-Verb"
+        "Fransk::Verb::ER-Verb"
     ),
     "i": genanki.Deck(
         1677740668562,
-        "Franske Verb::IR-Verb"
+        "Fransk::Verb::IR-Verb"
     ),
     "r": genanki.Deck(
         1677740668563,
-        "Franske Verb::RE-Verb"
+        "Fransk::Verb::RE-Verb"
     ),
     "se": genanki.Deck(
         1677740668564,
-        "Franske Verb::Refleksive Verb::Se"
+        "Fransk::Verb::Refleksive Verb::Se"
     ),
     "s": genanki.Deck(
         1677740668565,
-        "Franske Verb::Refleksive Verb::S'"
+        "Fransk::Verb::Refleksive Verb::S'"
     ),
     "u": genanki.Deck(
         1677740668566,
-        "Franske Verb::Uregelrette Verb"
+        "Fransk::Verb::Uregelrette Verb"
     )
 }
 
