@@ -134,7 +134,7 @@ seIndexes = {
 }
 
 regularVerbs = []
-    
+
 regularVerbs = Path("regelrett.txt").read_text().split("\n")
 regularVerbs = list(map(lambda a: {
     "value": a.lower().split(" å ")[0],
@@ -164,7 +164,7 @@ for i in regularVerbs:
 
     cards[verbtype].append(verb.capitalize() + " - {{c1::" + translated + "}}")
     match verbtype:
-        case "e":  # ER-verb
+        case "e":  # ER-verb, ex. parler
             present = [
                 verb[:-1],
                 verb[:-1] + "s",
@@ -174,17 +174,17 @@ for i in regularVerbs:
                 verb[:-2] + "ent"
             ]
             past = verb[:-2] + "é"
-        case "i":  # IR-verb
+        case "i":  # IR-verb, ex. finir
             present = [
-                verb[:-3] + "s",
-                verb[:-3] + "s",
-                verb[:-3] + "t",
-                verb[:-2] + "ons",
-                verb[:-2] + "ez",
-                verb[:-2] + "ent"
+                verb[:-1] + "s",
+                verb[:-1] + "s",
+                verb[:-1] + "t",
+                verb[:-1] + "ssons",
+                verb[:-1] + "ssez",
+                verb[:-1] + "ssent"
             ]
             past = verb[:-1]
-        case "r":  # RE-verb
+        case "r":  # RE-verb, ex. vendre
             present = [
                 verb[:-2] + "s",
                 verb[:-2] + "s",
@@ -304,27 +304,27 @@ for verb in uregelrette:
 decks = {
     "e": genanki.Deck(
         1677740668561,
-        "Fransk::Verb::ER-Verb"
+        "Fransk (generated)::Verb::ER-Verb"
     ),
     "i": genanki.Deck(
         1677740668562,
-        "Fransk::Verb::IR-Verb"
+        "Fransk (generated)::Verb::IR-Verb"
     ),
     "r": genanki.Deck(
         1677740668563,
-        "Fransk::Verb::RE-Verb"
+        "Fransk (generated)::Verb::RE-Verb"
     ),
     "se": genanki.Deck(
         1677740668564,
-        "Fransk::Verb::Refleksive Verb::Se"
+        "Fransk (generated)::Verb::Refleksive Verb::Se"
     ),
     "s": genanki.Deck(
         1677740668565,
-        "Fransk::Verb::Refleksive Verb::S'"
+        "Fransk (generated)::Verb::Refleksive Verb::S'"
     ),
     "u": genanki.Deck(
         1677740668566,
-        "Fransk::Verb::Uregelrette Verb"
+        "Fransk (generated)::Verb::Uregelrette Verb"
     )
 }
 
